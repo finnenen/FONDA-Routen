@@ -28,9 +28,11 @@ text-align:center;font:bold 11px sans-serif;border:2px solid #fff}.modal{display
 background:#0008;z-index:10;padding:18px}.modal-card{background:var(--surface);max-width:720px;margin:5vh auto;padding:18px;
 border-radius:12px;max-height:90vh;overflow:auto}.modal-close{float:right}.list-row{display:grid;
 grid-template-columns:42px 1fr 1fr 70px;gap:8px;padding:8px 0;border-bottom:1px solid #ddd}
-.collapsed #routes{display:none}.collapsed{max-height:58px;overflow:hidden}.settings{position:relative}
-.settings-panel{display:none;position:absolute;right:0;top:42px;width:210px;padding:12px;border-radius:12px;
-background:var(--surface);box-shadow:0 8px 30px #0003}.settings.open .settings-panel{display:block}
+.collapsed #routes{display:none}.collapsed{max-height:58px;overflow:visible}.settings{position:relative}
+.settings-panel{display:none;position:absolute;right:0;top:42px;width:270px;padding:16px;border-radius:14px;
+background:var(--surface);box-shadow:0 8px 30px #0004;z-index:20}.settings.open .settings-panel{display:block}
+.settings-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.settings-close{border:0;background:transparent;color:var(--muted);cursor:pointer;padding:4px 0}
 .plan-choice{display:block;padding-top:8px;color:var(--muted)}#plan-current{display:block;color:var(--accent);
 font-weight:700;margin-top:4px}select{display:block;width:100%;margin-top:5px;
 padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--text)}
@@ -39,7 +41,7 @@ padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--surf
 .route-toggle .toggle:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
 .route-toggle input:checked+.toggle{background:var(--accent)}.route-toggle input:checked+.toggle:before{transform:translateX(18px)}
 .setting{display:flex;justify-content:space-between;align-items:center;padding:8px 0}.switch{position:relative;width:42px;height:24px}
-.switch input{opacity:0;width:0;height:0}.slider{position:absolute;inset:0;background:#cbd5df;border-radius:24px;cursor:pointer}
+.switch input{position:absolute;opacity:0;width:1px;height:1px}.slider{position:absolute;inset:0;background:#9aa9b8;border-radius:24px;cursor:pointer;box-shadow:inset 0 0 0 1px #718292}
 .slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
 .switch input:checked+.slider{background:var(--accent)}.switch input:checked+.slider:before{transform:translateX(18px)}
 body.dark{--surface:#172331;--surface-2:#223142;--text:#edf4fb;--muted:#aab8c5;--line:#3a4b5c}
@@ -51,9 +53,14 @@ background-size:45px 45px,75px 75px;background-position:0 0,20px 25px;opacity:.6
 body.christmas #m{filter:saturate(.7) sepia(.1)}body.christmas .route{border-color:#d94a58}
 @media(max-width:760px){#panel{top:10px;left:10px;width:calc(100vw - 20px);max-height:calc(100dvh - 20px)}
 .route{padding:9px}.list-row{grid-template-columns:28px 1fr}.list-row .address,.list-row .attribute{grid-column:2}
-.modal{padding:8px}.modal-card{margin:2vh auto;padding:14px}}
+.modal{padding:8px}.modal-card{margin:2vh auto;padding:14px}
+#panel{top:50px}.leaflet-control-zoom{display:none}.settings-panel{position:fixed;top:58px;right:10px;
+width:min(330px,calc(100vw - 20px));max-height:calc(100dvh - 80px);overflow:auto;padding:18px}
+.setting{min-height:44px}.switch{flex:0 0 46px;width:46px;height:26px}.slider:before{width:20px;height:20px}
+.switch input:checked+.slider:before{transform:translateX(20px)}}
 </style></head><body><main class=app><div class=snow></div><section id=panel class=collapsed><div class=top><h1>Routen Wien</h1>
 <div class=settings><button class=menu onclick="toggleSettings()">⚙</button><div class=settings-panel>
+<div class=settings-head><b>Einstellungen</b><button class=settings-close onclick="closeSettings()">Schließen</button></div>
 <div class=setting>Darkmode <label class=switch><input type=checkbox onchange="document.body.classList.toggle('dark',this.checked)"><span class=slider></span></label></div>
 <div class=setting>Christmas <label class=switch><input type=checkbox onchange="document.body.classList.toggle('christmas',this.checked)"><span class=slider></span></label></div>
 <label class=plan-choice>Routenaufteilung<span id=plan-current></span><select id=plan-select onchange="selectPlan(this.value)"></select></label>
@@ -70,9 +77,20 @@ function copyText(value,label){navigator.clipboard.writeText(value).then(()=>ale
 function toggleMenu(button){const panel=document.querySelector('#panel');const open=panel.classList.toggle('collapsed')===false;
  button.setAttribute('aria-expanded',open);button.textContent=open?'Routen schließen':'Routen auswählen';}
 function toggleSettings(){document.querySelector('.settings').classList.toggle('open');}
+function closeSettings(){document.querySelector('.settings').classList.remove('open');}
+document.addEventListener('keydown',event=>{if(event.key==='Escape')closeSettings();});
+document.addEventListener('click',event=>{const settings=document.querySelector('.settings');
+ if(settings.classList.contains('open')&&!settings.contains(event.target))closeSettings();});
 function selectPlan(value){const next=Number(value);if(next===activePlan)return;
  if(!confirm('Routenaufteilung auf "'+plans[next].label+'" wechseln?')){document.querySelector('#plan-select').value=activePlan;return;}
  renderPlan(next);}
+function requestLocation(){if(!navigator.geolocation)return;
+ navigator.geolocation.getCurrentPosition(position=>{
+  const ll=[position.coords.latitude,position.coords.longitude];
+  L.circleMarker(ll,{radius:8,color:'#1769aa',fillColor:'#43a5f5',fillOpacity:.9,weight:3})
+   .addTo(map).bindPopup('Mein aktueller Standort').openPopup();
+  L.circle(ll,{radius:position.coords.accuracy,color:'#1769aa',fillOpacity:.08,weight:1}).addTo(map);
+ },()=>{}, {enableHighAccuracy:true,timeout:10000,maximumAge:60000});}
 function showList(r,ri){document.querySelector('#list-title').textContent='Route '+(ri+1)+' · Adressliste';
  document.querySelector('#list-content').innerHTML='<div class=list-row><b>Nr.</b><b>Name</b><b>Adresse</b><b>Attribut</b></div>'+
  r.stops.map((s,i)=>'<div class=list-row><b>'+(i+1)+'</b><span>'+esc(s.name)+'</span><span class=address>'+esc(s.a)+'</span><span class=attribute>'+esc(s.attribute)+'</span></div>').join('');
@@ -83,7 +101,11 @@ function renderPlan(planIndex){layers.forEach(layer=>map.removeLayer(layer));act
  const plan=plans[planIndex];plan.routes.forEach((r,ri)=>{const layer=L.layerGroup();layers.push(layer);if(r.geo)L.geoJSON(r.geo,{style:{color:r.color,weight:4,opacity:.8}}).addTo(layer);
  r.stops.forEach(s=>{all.push(s.ll);if(s.n==0&&ri>0)return;
   L.marker(s.ll,{icon:L.divIcon({className:'',html:'<div class=n style="background:'+r.color+'">'+(s.n==0?'D':s.n)+'</div>',iconSize:[22,22]})})
-   .addTo(layer).bindPopup('Route '+(ri+1)+' · '+(s.n==0?'Depot/Start':s.n+'. ')+s.a);});layer.addTo(map);
+   .addTo(layer).bindPopup('<b>Route '+(ri+1)+'</b><br>'+
+    (s.name?'<b>'+esc(s.name)+'</b><br>':'')+
+    '<b>Adresse:</b> '+esc(s.a)+'<br><b>Route:</b> '+(ri+1)+' · '+
+    (s.n==0?'Depot/Start':'Stopp '+s.n)+
+    (s.attribute?'<br><b>Attribut:</b> '+esc(s.attribute):''));});layer.addTo(map);
  const box=document.createElement('section');box.className='route';box.style.borderLeftColor=r.color;
  box.innerHTML='<h3><label class=route-toggle><input type=checkbox checked><span class=toggle></span><span>Route '+(ri+1)+'</span></label></h3>'+
  '<button class=list-button>Normale Liste ansehen</button><button>Normale Liste kopieren</button><button>CSV für Import kopieren</button>'+
@@ -101,4 +123,5 @@ function renderPlan(planIndex){layers.forEach(layer=>map.removeLayer(layer));act
 plans.forEach((plan,i)=>{const option=document.createElement('option');option.value=i;
  option.textContent=(plan.selected?'★ ':'')+plan.label;document.querySelector('#plan-select').appendChild(option);});
 renderPlan(plans.findIndex(plan=>plan.selected));
+requestLocation();
 </script>
