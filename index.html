@@ -4,51 +4,30 @@
 <link rel=stylesheet href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
-:root{--surface:#fff;--surface-2:#f4f7fa;--text:#17202a;--muted:#667585;--line:#d5dfe8;--accent:#1769aa}
-*{box-sizing:border-box}html,body{margin:0;font:14px system-ui,sans-serif;color:var(--text)}
+*{box-sizing:border-box}html,body{margin:0;font:14px system-ui,sans-serif;color:#17202a}
 body{background:#eef2f5;overflow:hidden}.app{position:relative;height:100dvh;width:100vw}
 #m{position:absolute;inset:0;z-index:1}.leaflet-control-zoom{margin-top:76px!important}
 #panel{position:absolute;top:14px;left:14px;width:min(390px,calc(100vw - 28px));max-height:calc(100dvh - 28px);
-padding:14px;overflow:auto;background:var(--surface);box-shadow:0 5px 24px #0003;border-radius:14px;z-index:2;
+padding:14px;overflow:auto;background:#fff;box-shadow:0 5px 24px #0003;border-radius:14px;z-index:2;
 transition:transform .2s ease,opacity .2s ease}.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
-h1{font-size:20px;margin:0}.route{border:1px solid var(--line);border-left:7px solid;
-border-radius:10px;padding:10px;margin:8px 0;background:var(--surface)}.route h3{margin:0 0 8px}
+h1{font-size:20px;margin:0}.route{border:1px solid #d5dce2;border-left:7px solid;
+border-radius:10px;padding:10px;margin:8px 0;background:#fff}.route h3{margin:0 0 8px}
 button,a{font:inherit}.route button,.route a,.menu{display:inline-block;padding:8px 10px;margin:3px 3px 3px 0;
-border:1px solid #b9c6d1;border-radius:8px;background:var(--surface);color:#145da0;text-decoration:none;cursor:pointer}
+border:1px solid #b9c6d1;border-radius:8px;background:#fff;color:#145da0;text-decoration:none;cursor:pointer}
 .route button:hover,.route a:hover,.menu:hover{background:#e8f2fb}.route .list-button{background:#1769aa;
 border-color:#1769aa;color:#fff;font-weight:600}.route .list-button:hover{background:#0d4f83}
-.addresses{white-space:pre-wrap;background:var(--surface-2);padding:8px;max-height:150px;overflow:auto;border-radius:6px}
+.addresses{white-space:pre-wrap;background:#f5f7f8;padding:8px;max-height:150px;overflow:auto;border-radius:6px}
 .gmaps-links{padding-left:22px}.n{color:#fff;border-radius:50%;width:22px;height:22px;line-height:22px;
 text-align:center;font:bold 11px sans-serif;border:2px solid #fff}.modal{display:none;position:fixed;inset:0;
-background:#0008;z-index:10;padding:18px}.modal-card{background:var(--surface);max-width:720px;margin:5vh auto;padding:18px;
+background:#0008;z-index:10;padding:18px}.modal-card{background:#fff;max-width:720px;margin:5vh auto;padding:18px;
 border-radius:12px;max-height:90vh;overflow:auto}.modal-close{float:right}.list-row{display:grid;
 grid-template-columns:42px 1fr 1fr 70px;gap:8px;padding:8px 0;border-bottom:1px solid #ddd}
-.collapsed #routes{display:none}.collapsed{max-height:58px;overflow:hidden}.settings{position:relative}
-.settings-panel{display:none;position:absolute;right:0;top:42px;width:210px;padding:12px;border-radius:12px;
-background:var(--surface);box-shadow:0 8px 30px #0003}.settings.open .settings-panel{display:block}
-.route-toggle{display:flex;align-items:center;gap:8px;cursor:pointer}.route-toggle input{display:none}
-.route-toggle .toggle{width:42px;height:24px;background:#cbd5df;border-radius:24px;position:relative}
-.route-toggle .toggle:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
-.route-toggle input:checked+.toggle{background:var(--accent)}.route-toggle input:checked+.toggle:before{transform:translateX(18px)}
-.setting{display:flex;justify-content:space-between;align-items:center;padding:8px 0}.switch{position:relative;width:42px;height:24px}
-.switch input{opacity:0;width:0;height:0}.slider{position:absolute;inset:0;background:#cbd5df;border-radius:24px;cursor:pointer}
-.slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
-.switch input:checked+.slider{background:var(--accent)}.switch input:checked+.slider:before{transform:translateX(18px)}
-body.dark{--surface:#172331;--surface-2:#223142;--text:#edf4fb;--muted:#aab8c5;--line:#3a4b5c}
-body.dark #m{filter:brightness(.72) contrast(1.05)}body.christmas{--accent:#b31d32}
-.snow{display:none;position:absolute;inset:0;z-index:400;pointer-events:none;overflow:hidden}
-body.christmas .snow{display:block;background-image:radial-gradient(white 1px,transparent 2px),radial-gradient(#fff 1px,transparent 2px);
-background-size:45px 45px,75px 75px;background-position:0 0,20px 25px;opacity:.65;animation:snow 12s linear infinite}
-@keyframes snow{to{background-position:45px 180px,95px 205px}}
-body.christmas #m{filter:saturate(.7) sepia(.1)}body.christmas .route{border-color:#d94a58}
+.collapsed #routes{display:none}.collapsed{max-height:58px;overflow:hidden}
 @media(max-width:760px){#panel{top:10px;left:10px;width:calc(100vw - 20px);max-height:calc(100dvh - 20px)}
 .route{padding:9px}.list-row{grid-template-columns:28px 1fr}.list-row .address,.list-row .attribute{grid-column:2}
 .modal{padding:8px}.modal-card{margin:2vh auto;padding:14px}}
-</style></head><body><main class=app><div class=snow></div><section id=panel class=collapsed><div class=top><h1>Routen Wien</h1>
-<div class=settings><button class=menu onclick="toggleSettings()">⚙</button><div class=settings-panel>
-<div class=setting>Darkmode <label class=switch><input type=checkbox onchange="document.body.classList.toggle('dark',this.checked)"><span class=slider></span></label></div>
-<div class=setting>Christmas <label class=switch><input type=checkbox onchange="document.body.classList.toggle('christmas',this.checked)"><span class=slider></span></label></div>
-</div></div><button class=menu aria-expanded=false onclick="toggleMenu(this)">Routen auswählen</button></div>
+</style></head><body><main class=app><section id=panel class=collapsed><div class=top><h1>Routen Wien</h1>
+<button class=menu aria-expanded=false onclick="toggleMenu(this)">Routen auswählen</button></div>
 <div id=routes></div></section><div id=m></div></main><div id=list-modal class=modal>
 <div class=modal-card><button class=modal-close onclick="closeList()">Schließen</button><h2 id=list-title></h2>
 <div id=list-content></div></div></div><script>
@@ -60,7 +39,6 @@ function text(r){return r.stops.map((s,i)=>(i+1)+'. '+[s.name,s.a,s.attribute].f
 function copyText(value,label){navigator.clipboard.writeText(value).then(()=>alert(label+' kopiert.')).catch(()=>alert('Kopieren nicht möglich - bitte markieren und kopieren.'));}
 function toggleMenu(button){const panel=document.querySelector('#panel');const open=panel.classList.toggle('collapsed')===false;
  button.setAttribute('aria-expanded',open);button.textContent=open?'Routen schließen':'Routen auswählen';}
-function toggleSettings(){document.querySelector('.settings').classList.toggle('open');}
 function showList(r,ri){document.querySelector('#list-title').textContent='Route '+(ri+1)+' · Adressliste';
  document.querySelector('#list-content').innerHTML='<div class=list-row><b>Nr.</b><b>Name</b><b>Adresse</b><b>Attribut</b></div>'+
  r.stops.map((s,i)=>'<div class=list-row><b>'+(i+1)+'</b><span>'+esc(s.name)+'</span><span class=address>'+esc(s.a)+'</span><span class=attribute>'+esc(s.attribute)+'</span></div>').join('');
@@ -71,9 +49,9 @@ data.forEach((r,ri)=>{const layer=L.layerGroup();layers.push(layer);if(r.geo)L.g
   L.marker(s.ll,{icon:L.divIcon({className:'',html:'<div class=n style="background:'+r.color+'">'+(s.n==0?'D':s.n)+'</div>',iconSize:[22,22]})})
    .addTo(layer).bindPopup('Route '+(ri+1)+' · '+(s.n==0?'Depot/Start':s.n+'. ')+s.a);});layer.addTo(map);
  const box=document.createElement('section');box.className='route';box.style.borderLeftColor=r.color;
- box.innerHTML='<h3><label class=route-toggle><input type=checkbox checked><span class=toggle></span><span>Route '+(ri+1)+'</span></label></h3>'+
+ box.innerHTML='<h3><label><input type=checkbox checked> Route '+(ri+1)+'</label></h3>'+
  '<button class=list-button>Normale Liste ansehen</button><button>Normale Liste kopieren</button><button>CSV für Import kopieren</button>'+
- '<details><summary>Routen-Vorschau</summary><div class=addresses>'+text(r).replaceAll('&','&amp;').replaceAll('<','&lt;')+'</div></details>'+
+ '<div class=addresses>'+text(r).replaceAll('&','&amp;').replaceAll('<','&lt;')+'</div>'+
  '<div><b>Google-Maps-Etappen:</b><ol class=gmaps-links>'+r.links.map((l,i)=>
  '<li><a href="'+l+'" target=_blank>Etappe '+(i+1)+' starten</a> '+
  '<button data-link="'+l+'">Link kopieren</button></li>').join('')+'</ol></div>';
